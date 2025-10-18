@@ -17,6 +17,14 @@ RED='\e[31m'
 BLUE='\e[34m'
 RESET='\e[0m'
 
+# Flashy menu descriptions
+echo -e "${GREEN}===============================${RESET}"
+echo " "
+echo -e "${YELLOW}  ***KELVIN'S FILEOPS MENU***  ${RESET}"
+echo " "
+echo -e "${GREEN}===============================${RESET}"
+echo " "
+
 PS3="Select the task you wish to perform: "
 
 select TASK in "View System Info" "Clean a Directory" "Find a File"  "Make Journal Entry" "Quit"
