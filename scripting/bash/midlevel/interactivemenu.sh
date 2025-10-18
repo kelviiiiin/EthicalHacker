@@ -1,5 +1,5 @@
 #!/bin/bash
-# v1.0
+# v2.0
 # This is script 2 of the midlevel series
 # This outputs an interactive menu on the terminal that lets user perform a number of
 # system or file related functions
@@ -20,7 +20,7 @@ RESET='\e[0m'
 # Flashy menu descriptions
 echo -e "${GREEN}===============================${RESET}"
 echo " "
-echo -e "${YELLOW}  ***KELVIN'S FILEOPS MENU***  ${RESET}"
+echo -e "${YELLOW}  ***KELVIN'S BASHOPS MENU***  ${RESET}"
 echo " "
 echo -e "${GREEN}===============================${RESET}"
 echo " "
@@ -38,7 +38,7 @@ do
 			LOAD=$(awk '{print $1}' /proc/loadavg)
 
 			# Check connectivity
-			if ping -c4 8.8.8. &> /dev/null; then
+			if ping -c4 8.8.8.8 &> /dev/null; then
 				STATUS=online
 			else
 				STATUS=offline
@@ -68,11 +68,14 @@ do
 			if [[ ${STATUS} = online ]]; then
 				echo -e "Internet Status: ${GREEN}${STATUS}${RESET}"
 			else
-				echo -e "Internet Status: ${RES}${STATUS}${RESET}"
+				echo -e "Internet Status: ${RED}${STATUS}${RESET}"
 			fi
 
 			echo -e "${GREEN}===========================${RESET}"
 			echo " "
+
+			# Log task
+			echo "$(date +'%F %T') | Task: $TASK | Status: Success" >> "$HOME/Documents/mylogs/menu.log"
 			;;
 		"Clean a Directory")
 			# Ensure destination directories exist
@@ -106,7 +109,7 @@ do
 				elif [[ "$filename" == *.mp4 || "$filename" == *.mkv ]]; then
 					mv "$filename" ~/Videos/
 					# feedback
-					echo -e "${GREEN}Moved "$filename" to ~/Pictures${RESET}"
+					echo -e "${GREEN}Moved "$filename" to ~/Videos${RESET}"
 
 				else
 					mv "$filename" ~/Others
@@ -114,6 +117,9 @@ do
 					echo -e "${GREEN}Moved "$filename" to ~/Others${RESET}"
 				fi
 			done
+
+			# Log task
+			echo "$(date +'%F %T') | Task: $TASK | Status: Success" >> "$HOME/Documents/mylogs/menu.log"
 			;;
 		"Find a File")
 			# Ask for the necessary variables from user
@@ -143,8 +149,14 @@ do
 				# The logic
 				echo " "
 				echo -e "${GREEN}Finding file(s)...${RESET}"
+				sleep 1
 				echo " "
-				find "$DIR" -type f -name "*$PATTERN*" | tee >( $LOG_ENABLED && tee -a "$LOG" )
+				# Check logging
+				if $LOG_ENABLED; then
+					find "$DIR" -type f -name "*$PATTERN*" | tee -a "$LOG"
+				else
+					find "$DIR" -type f -name "*$PATTERN*"
+				fi
 				echo " "
 
 				# Variable for results for later feedback
@@ -152,12 +164,16 @@ do
 
 				# Feedback if no files found
 				if [[ -z "$RESULTS" ]]; then
+					sleep 1
 					echo "No files found matching ${PATTERN}"
 				fi
 			else
 				echo -e "${YELLOW}$DIR does not exist. Try again.${RESET}"
 				exit 1
 			fi
+
+			# Log task
+			echo "$(date +'%F %T') | Task: $TASK | Status: Success" >> "$HOME/Documents/mylogs/menu.log"
 			;;
 		"Make Journal Entry")
 			# Ensure the folder exists
@@ -169,6 +185,7 @@ do
 			# Navigate into journal folder
 			echo " "
 			echo -e "${YELLOW}Navigating into journal folder...${RESET}"
+			sleep 1
 			echo " "
 			cd ~/Documents/journal
 
@@ -185,6 +202,7 @@ do
 			
 			# Feedback
 			echo -e "${GREEN}------ Entry entered on: $(date) ------${RESET}" >> "${name}.txt"
+			sleep 1
 			echo -e "${GREEN}Entry Successful!${RESET}"
 			echo " "
 			echo -e "${GREEN}Journal entry saved to ~/Documents/journal/${name}.txt${RESET}"
@@ -197,8 +215,12 @@ do
 			# Navigate back to working dir
 			echo " "
 			echo -e "${YELLOW}Navigating back to your working directory...${RESET}"
+			sleep 1
 			echo " "
 			cd "${CURR}"
+
+			# Log task
+			echo "$(date +'%F %T') | Task: $TASK | Status: Success" >> "$HOME/Documents/mylogs/menu.log"
 			;;
 		"Quit")
 			echo " "
@@ -212,4 +234,14 @@ do
 done
 
 				
+### CORRECTIONS AND IMPROVEMENTS ###
+# v1.0 got a 9.5 from ChatGPT ^^
+# 1. Check typos
+# 2. Cleaner condition for logging
+# 3. Add the logging feature to record tasks performed
 
+
+### EXTRA OPTIONAL UPGRADES FOR v3.0 ###
+# 1. Add function wrappers(e.g., view_sysinfo())
+# 2. Add ASCII Art Header
+# 3. Add error checking after each operation
