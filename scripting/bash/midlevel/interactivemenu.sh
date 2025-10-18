@@ -4,11 +4,11 @@
 # This outputs an interactive menu on the terminal that lets user perform a number of
 # system or file related functions
 
-# As a matter of convinience, continuity and to review lessons in lowlevel,
+# As a matter of convenience, continuity and to review lessons in lowlevel,
 # I will use code from those scripts as the primary options for the user
 
-# Thus, the options will be: view sysinfo, find a file, clean directory,
-# make a journal entry, backup a dir, and create a timer
+# Thus, the options will be: view sysinfo, find a file, clean directory, and
+# make a journal entry
 
 # Colors
 GREEN='\e[32m'
