@@ -8,12 +8,12 @@ BLUE='\e[34m'
 RESET='\e[0m'
 
 # Ensure the folder exists. -p ensures it wont throw and error if the dir exists
-mkdir -p "$HOME/Documents/journal "
+mkdir -p "$HOME/Documents/journal"
 
 # Record current dir
 CURR=$(pwd)
 
-# Navigate into test folder
+# Navigate into journal folder
 echo "Navigating to journal folder... "
 cd ~/Documents/journal
 
