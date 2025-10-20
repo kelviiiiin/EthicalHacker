@@ -89,7 +89,7 @@ else
 	# Check code
 	if [[ "$STATUS" == "200" ]]; then
 		# feedback
-		echo -e "${GREEN}{$1} is up!${RESET}"
+		echo -e "${GREEN}${1} is up!${RESET}"
 		# Keep count
 		((UP++))
 
