@@ -1,5 +1,5 @@
 #!/bin/bash
-# v1.0
+# v2.0
 # Script 3 in the midlevel series.
 # Allows user to check whether a website is up
 
@@ -18,7 +18,9 @@ LOG="$HOME/Documents/mylogs/webcheck/webcheck.log"
 
 # The "UI"
 echo " "
-echo -e "${GREEN}======= WEBCHECKER IS RUNNING =======${RESET}"
+echo -e "${YELLOW}╔════════════════════════════════════╗"
+echo -e "║         WEBSITE UPTIME MONITOR     ║"
+echo -e "╚════════════════════════════════════╝${RESET}"
 echo " "
 echo -e "${BLUE}Time: $(date +'%A, %d-%m: %H:%M')${RESET}"
 echo " "
@@ -31,7 +33,7 @@ DOWN=0
 
 # Sending Desktop Notifications when a site is down
 TITLE="Script Warning"
-URGENCY="normal" # options: low, norma, critical
+URGENCY="normal" # options: low, normal, critical
 EXPIRE_TIME="5000"
 
 # Check if the positional argument "$1" is set
@@ -39,11 +41,18 @@ if [[ -z "$1" ]]; then
 	# Get path to file with target sites
 	read -p "Enter the path to the text file with the targets: " FILE
 	echo " "
+	
+	# File input validation
+	if [[ ! -f "$FILE" ]]; then
+		echo -e "${RED}File not found!{RESET}"
+		echo " "
+		exit 1
+	fi
 
 	# Get targets from a file
 	while IFS= read -r line; do
 		# Get the returned code from the http header
-		STATUS="$(curl -sL -o /dev/null -w "%{http_code}" "$line")"
+		STATUS="$(curl -sL --max-time 20 -o /dev/null -w "%{http_code}" "$line")"
 
 		# Check code
 		if [[ "$STATUS" == "200" ]]; then
@@ -54,7 +63,7 @@ if [[ -z "$1" ]]; then
 
 			# Add to log file
 			echo " " >> "$LOG"
-			echo -e "${GREEN}$line was up at $(date +'%F, %H:%M')${RESET}" >> "$LOG"
+			echo -e "[$(date +'%F, %H:%M') "$line" - UP (200)" >> "$LOG"
 			echo " " >> "$LOG"
 		else
 			# feedback
@@ -64,7 +73,7 @@ if [[ -z "$1" ]]; then
 
 			# Add to log file
 			echo " " >> "$LOG"
-			echo -e "${RED}$line was down at $(date +'%F, %H:%M')${RESET}" >> "$LOG"
+			echo -e "[$(date +'%F, %H:%M') "$line" - DOWN ("$STATUS")" >> "$LOG"
 			echo " " >> "$LOG"
 
 			# The notification
@@ -75,28 +84,28 @@ if [[ -z "$1" ]]; then
 else
 	# "$1" is a URL
 	# Get the returned code from the http header
-	STATUS="$(curl -sL -o /dev/null -w "%{http_code}" "$1")"
+	STATUS="$(curl -sL --max-time 20 -o /dev/null -w "%{http_code}" "$1")"
 	
 	# Check code
 	if [[ "$STATUS" == "200" ]]; then
 		# feedback
-		echo -e "${GREEN}"$1" is up!${RESET}"
+		echo -e "${GREEN}{$1} is up!${RESET}"
 		# Keep count
 		((UP++))
 
 		# Add to log file
 		echo " " >> "$LOG"
-		echo -e "${GREEN}"$1" was up at $(date +'%F, %H:%M')${RESET}" >> "$LOG"
+		echo -e "[$(date +'%F, %H:%M')] "$1" - UP (200)" >> "$LOG"
 		echo " " >> "$LOG"
 	else
 		# feedback
-		echo -e "${RED}"$1" is down${RESET}"
+		echo -e "${RED}${1} is down!${RESET}"
 		# Keep count
 		((DOWN++))
 
 		# Add to log file
 		echo " "
-		echo -e "${RED}"$1" was down at $(date +'%F, %M:%M')${RESET}" >> "$LOG"
+		echo -e "[$(date +'%F, %H:%M')] "$1" - DOWN ("$STATUS")" >> "$LOG"
 		echo " " >> "$LOG"
 
 		# The notification
@@ -115,3 +124,13 @@ echo " "
 echo -e "${RED}Number of sites down: $DOWN${RESET}"
 echo " "
 echo -e "${GREEN}================ END ================${RESET}"
+
+### CORRECTIONS AND IMPROVEMENTS ###
+# v1.0 got a 9(I'm only being graded by ChatGPT now on)
+# 1. Check typos
+# 2. Variable quoting consistency
+# 3. Add file input validation
+# 4. Add curl timeout of retry(so it's not stuck on unresponsive URLs)
+# 5. Use a better logging format: [2022-10-14 14:32] https://example.com - UP (200)]
+# 6. Could add Interval Monitoring(no need for now)
+# 7. Flashier header ^^
