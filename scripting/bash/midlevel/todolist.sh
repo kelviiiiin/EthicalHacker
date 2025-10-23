@@ -1,5 +1,5 @@
 #!/bin/bash
-# v1.0
+# v2.0
 # This script 4 of the midlevel series.
 # It is a CLI To-Do list
 # I am going to use sed for the text insertion and manipulation
@@ -72,7 +72,7 @@ do
 			fi
 
 			# Find the file
-			FILE=$(find "$HOME/Documents/todolist" -type f -name "$DATE*")
+			FILE=$(find "$HOME/Documents/todolist" -type f -name "$DATE.txt")
 			sleep 1
 
 			# feedback if no file found
@@ -80,7 +80,7 @@ do
 				echo " "
 				echo -e "${RED}File not found.${RESET}"
 				echo " "
-				exit 1
+				continue
 			fi
 
 			# File found
@@ -114,7 +114,7 @@ do
 				echo " "
 				echo -e "${RED}File does not exist.${RESET}"
 				echo " "
-				exit 1
+				continue
 			fi
 
 			# Output the file contents
@@ -130,11 +130,14 @@ do
 			read -p "Enter the ID of the task you wanna mark as done: " ID
 			echo " "
 
+			# Capture task
+			LINE_TASK=$(sed -n "/^$ID\./p" "$FILE")
+
 			# Mark as done by appending text to the end of the task
-			sed -i "/$ID./s/$/ -> Done at $(date +'%F %H:%M')/" "$FILE"
+			sed -i "/^$ID\./s/$/ -> Done at $(date +'%F %H:%M')/" "$FILE"
 
 			# Log activity
-			echo "[$(date +'%F %H:%M')] Task $ID. $(sed -n "/$ID./p" "$FILE") completed - $FILE" >> "$LOG"
+			echo "[$(date +'%F %H:%M')] Completed $LINE_TASK - $FILE" >> "$LOG"
 			echo " " >> "$LOG"
 
 			# feedback
@@ -165,7 +168,7 @@ do
 				echo " "
 				echo -e "${RED}File does not exist.${RESET}"
 				echo " "
-				exit 1
+				continue
 			fi
 			
 			# Display file content
@@ -184,10 +187,30 @@ do
 			echo " "
 			echo -e "${YELLOW}Deleting selected task...${RESET}"
 			sleep 1
-			sed -i "/$ID./d" $FILE
+			# Capture task before deletion
+			TASK_LINE=$(sed -n "/^$ID\./p" "$FILE")
+			sed -i "/^$ID\./d" "$FILE"
+
+			# Corrected renumbering logic to preserve the entire task name, including spaces.
+			# It skips the first two lines (header) and re-indexes all subsequent lines
+			# that look like a task (start with a number followed by a period).
+			awk 'NR > 2 {
+				if ($0 ~ /^[0-9]+\./) {
+					# Print the new line number (NR-2) followed by a dot and the rest of the
+					# line, starting from the first space after the dot.
+					sub(/^[0-9]+\.\s*/, "", $0);
+					print (NR-2) ". " $0;
+				} else {
+					# Print any other lines (like empty lines) unchanged
+					print $0;
+				}
+			} NR <= 2 {
+				# Print the first two lines (header and empty line) unchanged
+				print $0;
+			}' "$FILE" > temp && mv temp "$FILE"
 			
 			# Log activity
-			echo "[$(date +'%F %H:%M')] Task $ID. $(sed -n "/$ID./p" "$FILE") deleted - $FILE" >> "$LOG"
+			echo "[$(date +'%F %H:%M')] Deleted: $TASK_LINE - $FILE" >> "$LOG"
 			echo " " >> "$LOG"
 			# Feedback
 			echo " "
@@ -204,9 +227,17 @@ do
 			echo -e "${RED}Quiting...${RESET}"
 			echo " "
 			sleep 1
-			exit 1
+			break
 			;;
 	esac
 done
 
-
+### CORRECTIONS AND RECOMMENDATIONS ###
+# v1.0 got a 8.7. I'm really happy with that considering I researched everything and
+# thought of all the logic myself^^
+# 1. Bug in log after deletion
+# 2. Use anchors in sed to ensure it only matches the specific pattern
+# 3. Repeated file finding(leaving that as is for now)
+# 4. Menu loop exit
+# 5. Task Number Consistency. Renumber automatically after each delete
+# 6. I should probably start using functions and printf inplace of echo
