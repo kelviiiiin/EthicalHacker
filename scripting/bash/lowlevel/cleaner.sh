@@ -19,10 +19,12 @@ echo -e "${YELLOW}-------------------------------------${RESET}"
 echo ""
 echo -e "${GREEN}Doing safe cleaning...${RESET}"
 echo ""
-echo -e "${GREEN}Clearing browser(chrome) cache...${RESET}"
+echo -e "${GREEN}Chrome no longer exists :)...${RESET}"
 rm -rf ~/.cache/google-chrome/*
 echo ""
 echo -e "${GREEN}Clearing spotify cache...${RESET}"
 rm -rf ~/.cache/spotify/*
 echo ""
-echo -e "${YELLOW}[*] Successfully cleared! Enjoy your space :)${RESET}"
+echo -e "${YELLOW}[*] Successfully cleared! Have a look at all your new space! :)${RESET}"
+echo ""
+df -h
