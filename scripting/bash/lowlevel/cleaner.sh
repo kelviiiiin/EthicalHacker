@@ -28,6 +28,10 @@ echo -e "${GREEN}Clearing spotify cache...${RESET}\n"
 
 rm -rf ~/.cache/spotify/*
 
+echo -e "${GREEN}Cleaning your apt cache...${RESET}\n"
+
+sudo apt autoclean
+
 echo -e "${YELLOW}[*] Successfully cleared! Have a look at all your new space! :)${RESET}\n"
 
 df -h
