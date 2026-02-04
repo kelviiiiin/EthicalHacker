@@ -32,6 +32,10 @@ echo -e "${GREEN}Cleaning your apt cache...${RESET}\n"
 
 sudo apt autoclean
 
+echo -e "${GREEN}Clearing burpbrowser data(perfectly safe:))...${RESET}\n"
+
+rm -rf ~/.BurpSuite/burpbrowser
+
 echo -e "${YELLOW}[*] Successfully cleared! Have a look at all your new space! :)${RESET}\n"
 
 df -h
