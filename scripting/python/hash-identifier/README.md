@@ -16,3 +16,26 @@
 - Tell you the password
 - Make network requests
 - Touch the file system
+
+#### Architecture
+┌─────────────────────────────────────────────────────────────┐
+│  CLI layer  (main, _build_argument_parser, _render_table)   │
+│  - reads command-line arguments                             │
+│  - prints the colored table to your terminal                │
+│  - returns an exit code                                     │
+└──────────────────────────┬──────────────────────────────────┘
+                           │ calls
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│  Pure-function layer  (identify)                            │
+│  - the actual decision-making                               │
+│  - takes a string, returns a list of HashCandidate          │
+│  - touches NO files, NO network, NO global state            │
+└──────────────────────────┬──────────────────────────────────┘
+                           │ uses
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│  Data layer  (PREFIX_RULES, HEX_LENGTH_RULES, charsets)     │
+│  - lookup tables describing what we know about hashes       │
+│  - read-only, defined at module load time                   │
+└─────────────────────────────────────────────────────────────┘
