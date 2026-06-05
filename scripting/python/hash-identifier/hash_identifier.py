@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 """
 hash_identifier.py
 
@@ -24,7 +25,7 @@ class HashCandidate:
 # ==========================================================
 # Prefix rules - strongest signal we have
 # ==========================================================
-PREFIX_RULES: list[tuple[str,str,str]] [
+PREFIX_RULES: list[tuple[str,str,str]] = [
     # Argon2 family
     ("$argon2id$", "Argon2id", "modern PHC string, the current standard"),
     ("$argon2i$", "Argon2i", "PHC string, side-channel-resistant variant"),
@@ -120,7 +121,7 @@ def _is_mysql5(text: str) -> bool:
     Return True for MySQL5 hash format
 
     """
-    if len(text) != _MYSQL5_TOTAL_LENGTH or not text.startswith("x"):
+    if len(text) != _MYSQL5_TOTAL_LENGTH or not text.startswith("*"):
         return False
     body = text[1:]
     return all(c in _HEX_UPPER_CHARSET for c in body)
@@ -309,28 +310,28 @@ def identify(raw_input: str) -> list[HashCandidate]:
                     )
                 ]
         
-        # ----- Step 5: not-a-hash shape hints ----- #
-        if text.startswith("eyJ"):
-            # JWTs always begin with 'eyJ' because their JSON header `{"alg":...}`
-            # base64-encodes to a string starting with those three characters
-            return [
-                HashCandidate(
-                    algorithm = "JWT (not a hash)",
-                    confidence = "low",
-                    reason = "leading 'eyJ' is base64 of `{\"` - JWT, not a hash",
-                )
-            ]
-        if any(c in text for c in "+/=") and len(text) > 8:
-            # Hex hashes never contain '+', '/', or '='. If your input does, it is almost
-            # certainly base64-encoded data of some kind. The `> 8` length floor avoids
-            # flagging short strings like "a+b=c" as base64
-            return [
-                HashCandidate(
-                    algorithm = "Base64 blob (not a hash)",
-                    confidence = "low",
-                    reason = "contains base64-only chars (`+`, `/`, `=`)",
-                )
-            ]
+    # ----- Step 5: not-a-hash shape hints ----- #
+    if text.startswith("eyJ"):
+        # JWTs always begin with 'eyJ' because their JSON header `{"alg":...}`
+        # base64-encodes to a string starting with those three characters
+        return [
+            HashCandidate(
+                algorithm = "JWT (not a hash)",
+                confidence = "low",
+                reason = "leading 'eyJ' is base64 of `{\"` - JWT, not a hash",
+            )
+        ]
+    if any(c in text for c in "+/=") and len(text) > 8:
+        # Hex hashes never contain '+', '/', or '='. If your input does, it is almost
+        # certainly base64-encoded data of some kind. The `> 8` length floor avoids
+        # flagging short strings like "a+b=c" as base64
+        return [
+            HashCandidate(
+                algorithm = "Base64 blob (not a hash)",
+                confidence = "low",
+                reason = "contains base64-only chars (`+`, `/`, `=`)",
+            )
+        ]
         
         # ----- Step 6: nothing matched ----- #
         # If we got here, the input has no known prefix, no special shape, no hex length
@@ -433,5 +434,5 @@ def main() -> int:
         )
         return 0
     
-    if __name__ == "__main___":
-        sys.exit(main())
+if __name__ == "__main__":
+    sys.exit(main())
