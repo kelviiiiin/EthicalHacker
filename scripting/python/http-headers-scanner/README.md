@@ -62,7 +62,3 @@ Total: 57.5/100
 Score: 58
 Grade: F
 ```
-
-## License
-
-Add license information here.
