@@ -41,8 +41,8 @@ This score is then converted into a letter grade using the following cutoffs:
 ## Usage
 
 ```bash
-# Example usage - update with actual command syntax
-http-headers-scanner <target-url>
+# Example usage
+python3 http_headers_scanner.py <target-url>
 ```
 
 ## Example Output
