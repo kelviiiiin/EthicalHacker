@@ -9,7 +9,7 @@ This file maps out the program and it's structure. It explains what file holds w
 ```
 password-manager/
 ├── __init__.py     package entry - re-exports the public API
-├── __main__.py     lets `python -m password-manager` to work
+├── __main__.py     lets `python -m password-manager` work
 ├── constants.py    every magic number and fixed string
 ├── crypto.py       Argon2id + AES-256-GCM primitives
 ├── generator.py    cryptographically secure password generation
@@ -91,7 +91,7 @@ Two layers of JSON live here:
 
 ## 3. Flow: `pv init`
 
-Craetes a brand-new empty vault. Step-by-step trace:
+Creates a brand-new empty vault. Step-by-step trace:
 
 ```
 user types: `pv init`
@@ -282,7 +282,7 @@ pv change-password
    └─► "Master password changed. Vault re-encrypted at <path>"
 ```
 
-The vault file stores the kdf params next to the ciphertext, enabling this operation. If the params lived only in the code, then "change my password" would have no way to also "upgrade my Argon2id parameters". Putting them in the file makes the upgrade path possible. The `kdf_parameters` argument on `change_master_password` is the hook of it.
+The vault file stores the KDF params next to the ciphertext, enabling this operation. If the params lived only in the code, then "change my password" would have no way to also "upgrade my Argon2id parameters". Putting them in the file makes the upgrade path possible. The `kdf_parameters` argument on `change_master_password` is the hook of it.
 
 **Crash safely:** if the process dies between the in-memory state and the atomic save, the *file on disk* still has the old salt and old ciphertext - fully readable with the old password. The new key only wins after `os.replace` lands; a botched rotation will never lock you out.
 
