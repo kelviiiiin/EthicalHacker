@@ -30,7 +30,7 @@ Each file has a strict reason to exist:
 
 - The crypto file calls *no I/O functions*. No file reads, no `print`, no `input`. This means that it is trivial to test (just call `encrypt(b"Hello", key)`) and impossible to introduce debugging errors at the wrong layer.
 
-- The vault terminal does not know anything about the terminal. It raises typed exceptions(`VaultNotFoundError`, `WrongPasswordError`, etc.). The CLI catches them and outputs colored error messages. A future GUI or web frontend could be built on `vault.py` without changing any of it.
+- The vault file does not know anything about the terminal. It raises typed exceptions(`VaultNotFoundError`, `WrongPasswordError`, etc.). The CLI catches them and outputs colored error messages. A future GUI or web frontend could be built on `vault.py` without changing any of it.
 
 - The CLI file knows nothing about cryptography. If we swap Argon2id for something newer, `main.py` doesn't change.
 
