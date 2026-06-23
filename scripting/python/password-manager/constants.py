@@ -4,7 +4,7 @@ constants.py
 
 Every "magic number" and fixed string the project uses
 
-This is file collects every constant here with a name and a comment
+This file collects every constant here, with a name and a comment
 explaining its meaning, allowing the rest of the codebase to become
 self-documenting
 
@@ -28,7 +28,7 @@ from typing import Final
 # Argon2id - Key Derivation Function parameters
 # =============================================================================
 # These three knobs control how slow and how memory-hungry the algorithm is.
-# They are informed by the OWASP Password Storage Cheat Sheet, but tumed for
+# They are informed by the OWASP Password Storage Cheat Sheet, but turned for
 # a single-user local password manager
 
 # Number of passes Argon2id makes over its memory buffer. More passes = slower
@@ -73,7 +73,7 @@ NONCE_LENGTH_BYTES: Final[int] = 12
 # =============================================================================
 # Vault file format
 # =============================================================================
-# The vault's format has been described in the architecture file. Storing kdf
+# The vault file's format has been described in the architecture file. Storing kdf
 # parameters in the file(not just in code) lets us bump defaults later without
 # breaking old vaults
 
@@ -104,7 +104,7 @@ CIPHER_NAME_AES_256_GCM: Final[str] = "aes-256-gcm"
 
 # File mode: 0o600 - only the owner can read+write it. We set this on the vault
 # file the moment we create it
-VAULT_FILE_MODE: Final[int] = 0o600
+VAULT_FILE_MODE: Final[int] = 0o600     # Octal notation in python
 
 # Default location: ~/.password-vault/vault.json
 DEFAULT_VAULT_DIRECTORY: Final[Path] = Path.home() / ".password-vault"
