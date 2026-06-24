@@ -30,6 +30,8 @@ from dataclasses import dataclass # decorator
 # `Type` selects the argon2id variant; `hash_secret_raw` returns raw key bytes
 # (no PHC string)
 from argon2.low_level import Type, hash_secret_raw
+# The exception raised on an invalid auth tag
+from cryptography.exceptions import InvalidTag
 # The authenticated symmentric encryption
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
