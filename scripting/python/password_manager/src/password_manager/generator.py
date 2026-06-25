@@ -4,7 +4,7 @@ generator.py
 
 Cryptographically secure random password generation
 
-We use `secrets` and not `random` since, if we were to use the random.choice to pick
+We use `secrets` and not `random` since, if we were to use random.choice to pick
 characters, then an attacker who saw one password could deduce the internal state
 of the random generator and predict every other password it produced. The `secrets`
 module pulls bytes from the operating system's cryptographic source, which is
