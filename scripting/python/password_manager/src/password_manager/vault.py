@@ -73,6 +73,7 @@ from password_manager.constants import (
     KDF_KEY_PARALLELISM,
     KDF_KEY_SALT,
     KDF_KEY_TIME_COST,
+    KDF_KEY_MEMORY_COST,
     KDF_NAME_ARGON2ID,
     KEY_LENGTH_BYTES,
     VAULT_FILE_MODE,
